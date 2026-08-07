@@ -9,4 +9,6 @@ Corpus builder (leak-free), retrieval (R1-R4), set selection (S1-S4), verificati
 | **Status** | implemented + harness-validated |
 | **Repository** | https://github.com/ElianChyndale/EcoQuant-Financial-Intelligence |
 
+**Location:** `submodules/ecoquant` (git submodule)
+
 [Back to tool index](README.md)

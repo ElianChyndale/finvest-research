@@ -9,4 +9,6 @@ Policy-aware tokenised market infrastructure prototype: EIP-712 risk attestation
 | **Status** | prototype |
 | **Repository** | https://github.com/ElianChyndale/Green-Bond-Market-Infrastructure |
 
+**Location:** `submodules/green-bond` (git submodule)
+
 [Back to tool index](README.md)

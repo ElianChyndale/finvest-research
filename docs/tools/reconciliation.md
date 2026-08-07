@@ -9,4 +9,6 @@ Read-only tool capturing repo state, dependency/divergence reports, migration pl
 | **Status** | implemented |
 | **Repository** | https://github.com/ElianChyndale/repo-reconciliation-toolkit |
 
+**Location:** `submodules/reconciliation` (git submodule)
+
 [Back to tool index](README.md)

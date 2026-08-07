@@ -13,3 +13,27 @@
 [submodule "submodules/dossiers"]
 	path = submodules/dossiers
 	url = https://github.com/ElianChyndale/project-evidence-dossiers.git
+[submodule "submodules/auralynq"]
+	path = submodules/auralynq
+	url = https://github.com/ElianChyndale/Auralynq.git
+[submodule "submodules/green-bond"]
+	path = submodules/green-bond
+	url = https://github.com/ElianChyndale/Green-Bond-Market-Infrastructure.git
+[submodule "submodules/application-gen"]
+	path = submodules/application-gen
+	url = https://github.com/ElianChyndale/academic-application-generator.git
+[submodule "submodules/portfolio"]
+	path = submodules/portfolio
+	url = https://github.com/ElianChyndale/chen-ai-systems-portfolio.git
+[submodule "submodules/pdf-manager"]
+	path = submodules/pdf-manager
+	url = https://github.com/ElianChyndale/pdf-manager.git
+[submodule "submodules/reconciliation"]
+	path = submodules/reconciliation
+	url = https://github.com/ElianChyndale/repo-reconciliation-toolkit.git
+[submodule "submodules/defence-lab"]
+	path = submodules/defence-lab
+	url = https://github.com/ElianChyndale/research-defence-lab.git
+[submodule "submodules/research-lab"]
+	path = submodules/research-lab
+	url = https://github.com/ElianChyndale/ai-research-engineering-lab.git

@@ -9,4 +9,6 @@ Claim -> hypothesis -> reproduced/not-reproduced mechanics manifests with exact 
 | **Status** | implemented |
 | **Repository** | https://github.com/ElianChyndale/paper-reproduction-lab |
 
+**Location:** `submodules/paper-repro` (git submodule)
+
 [Back to tool index](README.md)

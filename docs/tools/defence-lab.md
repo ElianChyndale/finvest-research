@@ -9,4 +9,6 @@ Offline active-recall and oral-defence toolkit for trustworthy AI / financial AI
 | **Status** | implemented |
 | **Repository** | https://github.com/ElianChyndale/research-defence-lab |
 
+**Location:** `submodules/defence-lab` (git submodule)
+
 [Back to tool index](README.md)

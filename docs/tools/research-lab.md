@@ -9,4 +9,6 @@ Deterministic experiments and learning implementations for ML/IR foundations. Re
 | **Status** | implemented (lab) |
 | **Repository** | no-remote (local only) |
 
+**Location:** `submodules/research-lab` (git submodule)
+
 [Back to tool index](README.md)

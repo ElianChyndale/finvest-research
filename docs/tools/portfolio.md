@@ -9,4 +9,6 @@ Standalone Next.js portfolio showing live research status, evidence badges, repr
 | **Status** | implemented |
 | **Repository** | https://github.com/ElianChyndale/chen-ai-systems-portfolio |
 
+**Location:** `submodules/portfolio` (git submodule)
+
 [Back to tool index](README.md)

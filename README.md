@@ -49,15 +49,24 @@ matrix entry.
 
 ## Where the code lives
 
-### Core submodules (cloned with this repo)
+**All 13 programme repositories are git submodules** — one clone brings the
+whole codebase locally.
 
-| Submodule | Role in the spine | Remote |
-|---|---|---|
-| `submodules/ecoquant` | Main research repo (corpus, retrieval, verification, experiments, annotations) | ElianChyndale/EcoQuant-Financial-Intelligence |
-| `submodules/contracts` | Versioned data contracts (EvidenceUnit, BenchmarkCase, ExperimentRecord) | ElianChyndale/financial-ai-contracts |
-| `submodules/verification-kit` | Independent Decimal financial verification + mutation controls | ElianChyndale/financial-systems-verification-kit |
-| `submodules/paper-repro` | Reproduction-study manifests (claim → hypothesis → mechanics) | ElianChyndale/paper-reproduction-lab |
-| `submodules/dossiers` | Evidence dossiers / claim matrices for external statements | ElianChyndale/project-evidence-dossiers |
+| Submodule | Role in the spine |
+|---|---|
+| `submodules/ecoquant` | Main research repo (corpus, retrieval, verification, experiments, annotations) |
+| `submodules/contracts` | Versioned data contracts (EvidenceUnit, BenchmarkCase, ExperimentRecord) |
+| `submodules/verification-kit` | Independent Decimal financial verification + mutation controls |
+| `submodules/paper-repro` | Reproduction-study manifests (claim → hypothesis → mechanics) |
+| `submodules/dossiers` | Evidence dossiers / claim matrices for external statements |
+| `submodules/pdf-manager` | Document rendering for evidence packages |
+| `submodules/auralynq` | Event-stream / review-scheduling patterns |
+| `submodules/defence-lab` | Oral-defence preparation |
+| `submodules/application-gen` | Evidence-constrained application drafts |
+| `submodules/portfolio` | Publication surface |
+| `submodules/green-bond` | Downstream application (risk attestation) |
+| `submodules/reconciliation` | Repo-state audit / migration planning |
+| `submodules/research-lab` | ML/IR foundations lab |
 
 Clone with submodules:
 
@@ -67,11 +76,7 @@ git clone --recurse-submodules https://github.com/ElianChyndale/finvest-research
 git submodule update --init --recursive
 ```
 
-### Linked sibling repos (not submodules — linked in [docs/tools/](docs/tools/))
-
-pdf-manager · Auralynq · research-defence-lab · academic-application-generator ·
-chen-ai-systems-portfolio · Green-Bond-Market-Infrastructure ·
-repo-reconciliation-toolkit · ai-research-engineering-lab
+Each has its own remote (see [docs/tools/](docs/tools/) for links).
 
 ## Current status (honest)
 

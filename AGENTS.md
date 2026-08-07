@@ -21,7 +21,7 @@ status, and the map; the code is one `git submodule update --init` away.
    evidence-status legend, and the honesty rules every claim must obey.
 5. [docs/tools/](docs/tools/) — one page per tool: purpose, status, spine role.
 
-## 3. Submodule map
+## 3. Submodule map (all 13 programme repos)
 
 | Path | Repo | Spine role |
 |---|---|---|
@@ -30,6 +30,14 @@ status, and the map; the code is one `git submodule update --init` away.
 | `submodules/verification-kit` | financial-systems-verification-kit | Dual-implementation numerical verification |
 | `submodules/paper-repro` | paper-reproduction-lab | Reproduction-study manifests |
 | `submodules/dossiers` | project-evidence-dossiers | Evidence dossiers / claim matrices |
+| `submodules/pdf-manager` | pdf-manager | Document rendering for evidence packages |
+| `submodules/auralynq` | Auralynq | Event-stream / review-scheduling patterns |
+| `submodules/defence-lab` | research-defence-lab | Oral-defence preparation |
+| `submodules/application-gen` | academic-application-generator | Evidence-constrained application drafts |
+| `submodules/portfolio` | chen-ai-systems-portfolio | Publication surface |
+| `submodules/green-bond` | Green-Bond-Market-Infrastructure | Downstream application (risk attestation) |
+| `submodules/reconciliation` | repo-reconciliation-toolkit | Repo-state audit / migration planning |
+| `submodules/research-lab` | ai-research-engineering-lab | ML/IR foundations lab |
 
 If a submodule is empty (not initialized):
 

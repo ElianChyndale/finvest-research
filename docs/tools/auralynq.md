@@ -9,4 +9,6 @@ Local-first AI-augmented exam system (CFA). Reusable patterns: append-only event
 | **Status** | implemented (separate project) |
 | **Repository** | https://github.com/ElianChyndale/Auralynq |
 
+**Location:** `submodules/auralynq` (git submodule)
+
 [Back to tool index](README.md)

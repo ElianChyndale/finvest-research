@@ -9,4 +9,6 @@ Canonical JSON + SHA-256 contracts: EvidenceUnit, BenchmarkCase, ExperimentRecor
 | **Status** | implemented |
 | **Repository** | https://github.com/ElianChyndale/financial-ai-contracts |
 
+**Location:** `submodules/contracts` (git submodule)
+
 [Back to tool index](README.md)

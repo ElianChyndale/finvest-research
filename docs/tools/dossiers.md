@@ -9,4 +9,6 @@ Five-level evidence status (implemented/validated/supported/prototype/planned), 
 | **Status** | implemented (snapshot lags) |
 | **Repository** | https://github.com/ElianChyndale/project-evidence-dossiers |
 
+**Location:** `submodules/dossiers` (git submodule)
+
 [Back to tool index](README.md)

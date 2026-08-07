@@ -9,4 +9,6 @@ OCR, layout/table/formula preservation, side-by-side reader, region highlighting
 | **Status** | implemented |
 | **Repository** | https://github.com/ElianChyndale/pdf-manager |
 
+**Location:** `submodules/pdf-manager` (git submodule)
+
 [Back to tool index](README.md)

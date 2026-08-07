@@ -9,4 +9,6 @@ Deterministic Decimal financial formulas, negative-control mutants (13 killed), 
 | **Status** | implemented |
 | **Repository** | https://github.com/ElianChyndale/financial-systems-verification-kit |
 
+**Location:** `submodules/verification-kit` (git submodule)
+
 [Back to tool index](README.md)

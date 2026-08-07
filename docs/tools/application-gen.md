@@ -9,4 +9,6 @@ Offline system generating MSc/RA application drafts bound to frozen dossiers, wi
 | **Status** | implemented |
 | **Repository** | https://github.com/ElianChyndale/academic-application-generator |
 
+**Location:** `submodules/application-gen` (git submodule)
+
 [Back to tool index](README.md)
