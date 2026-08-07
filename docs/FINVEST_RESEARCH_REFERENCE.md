@@ -241,6 +241,35 @@ Fold B: train/calibrate on other 5   → test ONLY on held-out issuer 5
 - `research/reports/E5_CALIBRATION_SELECTIVE.md` 仍把 0.923 当作 SUPPORTED 呈现，无 INVALIDATED 标记、无 0.719 基线。
 - 审计声称已更新报告，但**当前报告文件既无 'INVALIDATED' 也无 '0.719' 也无 'leak'**。
 
+**N-6：camelCase 概念拼写导致 requirement induction 失败（真实数据验证）**
+
+- 真实 benchmark 问题用 camelCase 拼写 XBRL 概念（`AccruedLiabilitiesCurrent`），与字典空格分隔 key（`'accrued liabilities'`）不匹配 → 预测退化为更宽泛的 `Liabilities` → S2/S3/R4 选不出任何东西。
+- 修复：`_concepts_for` 同时匹配 camelCase 边界加空格变体。真实 170k corpus 上 R1 S2_greedy 从 size 0.0 → 1.0，R4 recall@5 从 0.04 → 0.08。
+
+**N-7：数值提取把日期/表单数字算进答案（真实数据验证，4/5 ANSWER 错误根因）**
+
+- `_extract_numbers` 的 regex 把 `2024-09-29` 拆成 `2024, -9, -29`，`10-Q` 拆出 `10` → `subtract` 算出巨大负数 `-9947023532`，被 executability-only 判 SUPPORTED → 错误 ANSWER。
+- 真实 170k run（路由修复后）产生 4/5 错误 ANSWER，全部 R1 recall@5=0.0（gold 未检索到，却用错误概念算出数）。
+- 修复：排除日期形/表单形 token。
+
+**N-8：数值验证不校验计算输入概念是否齐全（N-7 修复后仍 4/5 错）**
+
+- 即使排除日期数字，`subtract` 对**只含 OCF、缺 capex** 的证据池仍算出荒谬值并 SUPPORTED。
+- 修复：`verify_calculation(required_concepts=...)`，`_verify` 传 `_concepts_for(question)`（gold-free）。缺失任一输入概念 → REVIEW_REQUIRED。
+
+**真实数据验证结果（修复后，冻结 170,229 corpus）**
+
+| 指标 | 修复前（恒真） | 修复后 |
+|---|---|---|
+| decisions | 0 ANSWER / 18 REVIEW / 1 ABSTAIN | **1 ANSWER / 18 REVIEW / 0 ABSTAIN** |
+| answer_precision | 0.0（无 ANSWER） | **1.0**（唯一 ANSWER 正确） |
+| unsafe_answer_rate | 0.0（恒真假象） | **0.0**（真实） |
+| coverage | 0.0 | **0.0526** |
+| false_review_rate | 0（恒真假象） | 0.8333（诚实：大部分可答案例被 REVIEW） |
+| leakage audit | clean | **clean**（`evidence_id_overlap_with_gold: 0`） |
+
+**结论**：修复让系统从"恒真伪安全"变成**真实安全 + 诚实保守**——只在证据充分（gold recall@5=1.0）且输入概念齐全时 ANSWER，否则 REVIEW。`false_review_rate 0.83` 诚实地暴露了检索质量不足（recall@5 ~0.08）——这正是选择性风险控制论文要研究的问题。
+
 ### 3.7b 已确认为真实能力的部分（非 P0，但值得记录）
 
 | 能力 | 状态 | 证据 |
