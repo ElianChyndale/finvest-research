@@ -1,0 +1,15 @@
+[submodule "submodules/ecoquant"]
+	path = submodules/ecoquant
+	url = https://github.com/ElianChyndale/EcoQuant-Financial-Intelligence.git
+[submodule "submodules/contracts"]
+	path = submodules/contracts
+	url = https://github.com/ElianChyndale/financial-ai-contracts.git
+[submodule "submodules/verification-kit"]
+	path = submodules/verification-kit
+	url = https://github.com/ElianChyndale/financial-systems-verification-kit.git
+[submodule "submodules/paper-repro"]
+	path = submodules/paper-repro
+	url = https://github.com/ElianChyndale/paper-reproduction-lab.git
+[submodule "submodules/dossiers"]
+	path = submodules/dossiers
+	url = https://github.com/ElianChyndale/project-evidence-dossiers.git

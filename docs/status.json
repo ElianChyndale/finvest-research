@@ -1,0 +1,161 @@
+{
+  "annotation": {
+    "n_annotations": 20,
+    "n_evidence_packages": 60,
+    "route": {
+      "ABSTAIN": 1,
+      "ANSWER": 16,
+      "REVIEW": 3
+    },
+    "status": {
+      "NEEDS_EXTERNAL_REVIEW": 3,
+      "SOLO_PROVISIONAL": 17
+    }
+  },
+  "corpus": {
+    "builder_commit": "7c1bf11",
+    "corpus_id": "af406d474f7455477e6a30d1b98900854fcfcd52b6e53a66b9f9a475b3e7c7c4",
+    "issuers": [
+      "AAPL",
+      "EQIX",
+      "JNJ",
+      "KO",
+      "MSFT",
+      "UPS"
+    ],
+    "record_count": 170229,
+    "split_audit": {
+      "cross_split_leakage_violations": [],
+      "evidence_id_overlap_with_gold": 0,
+      "gold_tokens_in_corpus": []
+    }
+  },
+  "e_series_registry": [
+    {
+      "id": "E0",
+      "review_status": null,
+      "status": "complete",
+      "title": "Benchmark Integrity and Reproducibility"
+    },
+    {
+      "id": "E1",
+      "review_status": null,
+      "status": "complete",
+      "title": "Real-World Financial and Climate Retrieval"
+    },
+    {
+      "id": "E2",
+      "review_status": null,
+      "status": "complete",
+      "title": "Table and Numerical Reasoning"
+    },
+    {
+      "id": "E3",
+      "review_status": null,
+      "status": "complete",
+      "title": "Temporal and Contradiction-Aware Retrieval"
+    },
+    {
+      "id": "E4",
+      "review_status": null,
+      "status": "complete",
+      "title": "Evidence and Numerical Verification"
+    },
+    {
+      "id": "E5",
+      "review_status": "INVALIDATED",
+      "status": "done",
+      "title": "Calibration and Selective Prediction"
+    },
+    {
+      "id": "E6",
+      "review_status": null,
+      "status": "planned (requires human review)",
+      "title": "Human-in-the-Loop Review"
+    },
+    {
+      "id": "E7",
+      "review_status": null,
+      "status": "complete",
+      "title": "Cross-Domain Commercial Analysis"
+    },
+    {
+      "id": "E8",
+      "review_status": null,
+      "status": "complete",
+      "title": "EcoQuant System Integration"
+    }
+  ],
+  "experiments": {
+    "A10_HARNESS_INTEGRITY_PILOT": {
+      "evidence_availability_rate": 90.0,
+      "experiment": "A10_HARNESS_INTEGRITY_PILOT",
+      "markers": [
+        "EXPLORATORY_PILOT",
+        "SMALL_SAMPLE",
+        "NOT_PAPER_HEADLINE"
+      ],
+      "verification_rates": {
+        "filing_cutoff_pass_rate": 100.0,
+        "joint_verifier_invoked": true,
+        "joint_verifier_pass": 55.6,
+        "numerical_verifier_pass": 100.0,
+        "temporal_verifier_pass": 55.6,
+        "unit_scale_consistency_rate": 100.0,
+        "version_verifier_pass": 100.0
+      }
+    },
+    "A11_TWO_STAGE": {
+      "corpus_id": "af406d474f7455477e6a30d1b98900854fcfcd52b6e53a66b9f9a475b3e7c7c4",
+      "corpus_records": 170229,
+      "decisions": {
+        "ABSTAIN": 1,
+        "ANSWER": 0,
+        "REVIEW": 18
+      },
+      "denominator_audit": {
+        "excluded_ids": [
+          "finvest-AAPL-cashflow-proxy-2022"
+        ],
+        "n_annotated": 20,
+        "n_answerable_gold": 18,
+        "n_eligible_for_evaluation": 19,
+        "n_excluded_failed_present": 0,
+        "n_excluded_no_sealed_case": 1,
+        "n_final_evaluated": 19,
+        "n_insufficient_gold": 1,
+        "n_packages_total": 60,
+        "note": "n_final_evaluated = n_annotated - n_excluded_no_sealed_case - n_excluded_failed_present. Recall@K and decision rates use n_final_evaluated as the denominator; all counts are auditable."
+      },
+      "leakage_audit": {
+        "cross_split_leakage_violations": [],
+        "evidence_id_overlap_with_gold": 0,
+        "gold_tokens_in_corpus": []
+      },
+      "markers": [
+        "EXPLORATORY_PILOT",
+        "SMALL_SAMPLE",
+        "NOT_PAPER_HEADLINE",
+        "SOLO_PROVISIONAL"
+      ],
+      "n_cases": 19,
+      "per_issuer_macro": {
+        "R1_bm25": 0.08,
+        "R2_dense": 0.06,
+        "R3_rrf": 0.08,
+        "R4_concept_temporal": 0.04
+      },
+      "selective": {
+        "abstention_precision": 1.0,
+        "answer_precision": 0.0,
+        "coverage": 0.0,
+        "false_review_rate": 0.0,
+        "note": "coverage = ANSWER share; a system that always REVIEWS has high safety but zero utility — report coverage alongside precision.",
+        "review_precision": 1.0,
+        "unsafe_answer_rate": 0.0
+      }
+    }
+  },
+  "generated_at_note": "regenerate with scripts/sync_status.py",
+  "schema_version": "finvest-hub-status.v1"
+}

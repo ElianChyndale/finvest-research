@@ -1,0 +1,216 @@
+"""Regenerate docs/experiments.md + docs/status.json from the submodules.
+
+Reads the authoritative experiment artifacts inside submodules/ecoquant and
+mirrors them into this hub so the hub's docs never drift from reality.
+
+Run after experiments change:
+    python scripts/sync_status.py
+(or rely on CI to run it and commit the diff).
+"""
+
+from __future__ import annotations
+
+import json
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+
+# Truth source: the LOCAL working copies under the workspace (D:/Aireland),
+# which contain the latest (possibly unpushed) experiment results. The
+# submodules under submodules/ are the PUBLISHED snapshots (pinned to pushed
+# commits) and may lag the local truth. Fall back to the submodule if the
+# local path is absent.
+_LOCAL_ECOQUANT = ROOT.parent / "EcoQuant-Financial-Intelligence"
+ECOQUANT = _LOCAL_ECOQUANT if _LOCAL_ECOQUANT.exists() else ROOT / "submodules/ecoquant"
+
+MISSING = object()
+
+
+def _read_json(rel: str) -> dict | None:
+    p = ECOQUANT / rel
+    if not p.exists():
+        return None
+    try:
+        return json.loads(p.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+
+
+def _a11_summary() -> dict:
+    d = _read_json("research/results/a11_two_stage.json") or {}
+    return {
+        "n_cases": d.get("n_cases"),
+        "decisions": d.get("decisions"),
+        "denominator_audit": d.get("denominator_audit"),
+        "selective": d.get("selective"),
+        "per_issuer_macro": (d.get("per_issuer_retrieval") or {}).get("macro_average_recall@5"),
+        "corpus_id": (d.get("corpus") or {}).get("corpus_id"),
+        "corpus_records": (d.get("corpus") or {}).get("record_count"),
+        "leakage_audit": (d.get("corpus") or {}).get("leakage_audit"),
+        "markers": d.get("markers"),
+    }
+
+
+def _a10_summary() -> dict:
+    d = _read_json("research/results/minimal_pilot.json") or {}
+    return {
+        "experiment": d.get("experiment"),
+        "verification_rates": d.get("verification_rates"),
+        "evidence_availability_rate": (d.get("coverage_curve") or {}).get("evidence_availability_rate"),
+        "markers": d.get("markers"),
+    }
+
+
+def _annotation_summary() -> dict:
+    recs_path = ECOQUANT / "human_review/day1/v0.2-draft/SOLO_ANNOTATIONS.jsonl"
+    if not recs_path.exists():
+        return {}
+    recs = [json.loads(l) for l in recs_path.open(encoding="utf-8") if l.strip()]
+    from collections import Counter
+
+    status = Counter(r.get("status") for r in recs)
+    route = Counter(r.get("route") for r in recs)
+    pkgs = ECOQUANT / "human_review/evidence_packages"
+    n_pkgs = len([p for p in pkgs.iterdir() if p.is_dir()]) if pkgs.exists() else 0
+    return {"n_annotations": len(recs), "status": dict(status), "route": dict(route),
+            "n_evidence_packages": n_pkgs}
+
+
+def _corpus_summary() -> dict:
+    m = _read_json("research/corpus/CORPUS_MANIFEST.json") or {}
+    split = _read_json("research/corpus/SPLIT_MANIFEST.json") or {}
+    return {
+        "corpus_id": m.get("corpus_id"),
+        "record_count": m.get("record_count"),
+        "issuers": m.get("issuers"),
+        "builder_commit": m.get("builder_commit"),
+        "split_audit": (split.get("audit") or {}),
+    }
+
+
+def _registry_summary() -> list[dict]:
+    """Parse the E-series registry (workspace-level, may be absent)."""
+    import re
+
+    reg = ROOT.parent / "_research_program/planning/EXPERIMENT_REGISTRY.yaml"
+    if not reg.exists():
+        return []
+    text = reg.read_text(encoding="utf-8")
+    entries: list[dict] = []
+    for m in re.finditer(r"^  - id: (E\d+)", text, re.M):
+        eid = m.group(1)
+        start = m.start()
+        end = text.find("\n  - id:", start + 1)
+        block = text[start:end if end != -1 else len(text)]
+        title = re.search(r"title: (.+)", block)
+        status = re.search(r"status: (.+)", block)
+        review = re.search(r"review_status: (.+)", block)
+        entries.append({
+            "id": eid,
+            "title": title.group(1).strip() if title else "",
+            "status": status.group(1).strip() if status else "",
+            "review_status": review.group(1).strip() if review else None,
+        })
+    return entries
+
+
+def main() -> int:
+    status = {
+        "schema_version": "finvest-hub-status.v1",
+        "generated_at_note": "regenerate with scripts/sync_status.py",
+        "experiments": {
+            "A11_TWO_STAGE": _a11_summary(),
+            "A10_HARNESS_INTEGRITY_PILOT": _a10_summary(),
+        },
+        "annotation": _annotation_summary(),
+        "corpus": _corpus_summary(),
+        "e_series_registry": _registry_summary(),
+    }
+    (ROOT / "docs/status.json").write_text(
+        json.dumps(status, indent=2, sort_keys=True, ensure_ascii=False), encoding="utf-8"
+    )
+
+    # Render experiments.md
+    lines = [
+        "# FinVEST Experiment Status (machine-synced)",
+        "",
+        "> Regenerated by `scripts/sync_status.py` from `submodules/ecoquant` "
+        "result artifacts. Do not hand-edit; run the script.",
+        "",
+    ]
+    a11 = status["experiments"]["A11_TWO_STAGE"]
+    if a11.get("n_cases") is not None:
+        lines += [
+            "## A11 — Two-stage experiment (leak-free corpus)",
+            "",
+            f"- Markers: {', '.join(a11.get('markers') or [])}",
+            f"- Cases evaluated: {a11['n_cases']}",
+            f"- Decisions: {a11['decisions']}",
+            f"- Corpus: {a11['corpus_records']} facts, id {str(a11.get('corpus_id'))[:16]}…",
+            f"- Per-issuer macro recall@5: {a11.get('per_issuer_macro')}",
+            f"- Selective: {a11.get('selective')}",
+            f"- Leakage audit: {a11.get('leakage_audit')}",
+            "",
+            "### Denominator audit",
+            "",
+            "```json",
+            json.dumps(a11.get("denominator_audit"), indent=2, ensure_ascii=False),
+            "```",
+            "",
+        ]
+    a10 = status["experiments"]["A10_HARNESS_INTEGRITY_PILOT"]
+    if a10.get("experiment"):
+        lines += [
+            "## A10 — Harness integrity pilot",
+            "",
+            f"- Experiment: `{a10['experiment']}`",
+            f"- Evidence availability rate: {a10.get('evidence_availability_rate')}",
+            f"- Verification rates: {a10.get('verification_rates')}",
+            "",
+        ]
+    ann = status["annotation"]
+    if ann:
+        lines += [
+            "## Annotation state",
+            "",
+            f"- Annotations: {ann.get('n_annotations')}",
+            f"- Status: {ann.get('status')}",
+            f"- Route: {ann.get('route')}",
+            f"- Frozen evidence packages: {ann.get('n_evidence_packages')}",
+            "",
+        ]
+    cor = status["corpus"]
+    if cor.get("corpus_id"):
+        lines += [
+            "## Leak-free corpus",
+            "",
+            f"- corpus_id: `{cor['corpus_id']}`",
+            f"- Records: {cor.get('record_count')}",
+            f"- Issuers: {cor.get('issuers')}",
+            f"- Builder commit: {cor.get('builder_commit')}",
+            f"- Split audit: {cor.get('split_audit')}",
+            "",
+        ]
+    reg = status["e_series_registry"]
+    if reg:
+        lines += ["## E-series registry (workspace)", ""]
+        for e in reg:
+            rev = f" | review: {e['review_status']}" if e.get("review_status") else ""
+            lines.append(f"- **{e['id']}** {e['title']} — `{e['status']}`{rev}")
+        lines.append("")
+    lines += [
+        "## Honest disclaimer",
+        "",
+        "All numbers above are pilot-level (solo-provisional labels, small "
+        "sample). Nothing here is a paper headline. Low retrieval recall is a "
+        "real finding, not a failure to report.",
+        "",
+    ]
+    (ROOT / "docs/experiments.md").write_text("\n".join(lines), encoding="utf-8")
+    print(f"synced: docs/status.json + docs/experiments.md ({len(reg)} E-series entries)")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

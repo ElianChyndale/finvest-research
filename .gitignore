@@ -1,0 +1,5 @@
+# Submodules carry their own content; nothing heavy is stored here.
+__pycache__/
+*.pyc
+.venv/
+.DS_Store
