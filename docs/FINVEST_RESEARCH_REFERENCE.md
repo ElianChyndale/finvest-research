@@ -1,10 +1,15 @@
 # FinVEST 科研核心参考文件
 
-> **FinVEST Research Core Reference — Financial Research Spine**
+> **FinVEST Research Core Reference #1 — Financial Research Spine（代码验证版）**
 >
-> 本文档是 FinVEST 研究纲领的**权威参考文件**：对 `finvest-research`（含 13 个 submodule，核心是 `submodules/ecoquant`）进行深度研究分析，覆盖 2026-08 科研审计提出的全部内容，并**逐一用代码与运行结果验证**，再给出提升路径与科研定位。
+> 本文档是 FinVEST 研究纲领的**权威现状审计参考文件**：对 `finvest-research`（含 13 个 submodule，核心是 `submodules/ecoquant`）进行深度研究分析，覆盖 2026-08 科研审计提出的全部内容，并**逐一用代码与运行结果验证**，再给出提升路径与科研定位。
 >
-> **验证基准**：`finvest-research@97ddb4c`，`ecoquant@6493165`，2026-08-07。本文档中所有“已验证”的判断均标注了 `文件:行号` 或运行产物路径，可供复核。
+> **验证基准**：`finvest-research` 主分支，`ecoquant@6465fff`（P0-1..N-8 修复后），2026-08-07。本文档中所有“已验证”的判断均标注了 `文件:行号` 或运行产物路径，可供复核。
+>
+> **配套文件**：
+> - [FINVEST_RESEARCH_REFERENCE_2.md](FINVEST_RESEARCH_REFERENCE_2.md) — **战略决策版**（唯一方向、103-source 文献矩阵、go/no-go 门槛、仓库战略）。文件 1 回答"你现在是什么"，文件 2 回答"你应该成为什么"。
+> - [RESEARCH_REFERENCE_RECONCILIATION.md](RESEARCH_REFERENCE_RECONCILIATION.md) — 两份文件的差异、过时声明、新发现与优化行动。
+> - [RESEARCH_DESIGN_AND_PLAN.md](RESEARCH_DESIGN_AND_PLAN.md) — 可执行设计与按周计划。
 >
 > **用途**：金融科研方向的核心参考；撰写论文、博士申请、答辩、作品集时的单一事实来源。
 
@@ -526,6 +531,13 @@ L = w1·L_wrong_answer + w2·L_missing_evidence + w3·L_wrong_version + w4·L_nu
 | 顶级 Finance journal | 1/10 | **4-6/10** | 经济机制 + 真实结果变量（见 §10） |
 
 ### 9.2 四篇论文策略（采纳审计拆分，补充定位）
+
+> **⚠ 2026-08-07 战略更新（文件 2）**：首篇论文按文件 2 收缩为单一聚焦论文，合并原 Paper 1+2：
+> > **When Is Evidence Enough? Version-Aware Minimum Evidence Sets and Risk-Controlled Abstention for Long Financial Documents**
+> - 只做金融文档（36-50 issuers / ~600 cases / 100-150 双标）。
+> - 三项最低贡献中至少两项：①版本化 benchmark+协议；②最小充分证据集选择方法；③固定风险下提高 ANSWER coverage 并减少复核。
+> - 检索优先（Recall@20≥0.70 是 Month 5 硬门槛）。工业文档作为后续 external validity，不混入首篇。
+> 下面的 Paper 1-4 作为完整路线保留，但执行顺序以收缩版首篇论文为先。
 
 **Paper 1 — Benchmark**（目标 ICAIF / SIGIR / ACL dataset track）
 > **FinVEST: A Version- and Time-Aware Benchmark for Minimum-Sufficient Financial Evidence Retrieval**

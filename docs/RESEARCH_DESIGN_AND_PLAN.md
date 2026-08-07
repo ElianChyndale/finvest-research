@@ -1,10 +1,12 @@
 # FinVEST 科研设计 + 执行计划
 
-> **Design & Execution Plan based on [FINVEST_RESEARCH_REFERENCE.md](FINVEST_RESEARCH_REFERENCE.md)**
+> **Design & Execution Plan based on [FINVEST_RESEARCH_REFERENCE.md](FINVEST_RESEARCH_REFERENCE.md) + [FINVEST_RESEARCH_REFERENCE_2.md](FINVEST_RESEARCH_REFERENCE_2.md)**
 >
-> 本文件把参考文件中的判断转化为**可执行的架构设计与按周计划**。核心目标：在 90 天内获得第一张**完全无 target leakage、可复现、能区分方法优劣的主实验表**。
+> 本文件把两份参考文件中的判断转化为**可执行的架构设计与按周计划**。核心目标：在 90 天内获得第一张**完全无 target leakage、可复现、能区分方法优劣的主实验表**。
 >
-> 状态基准：`finvest-research@97ddb4c`，`ecoquant@6493165`，2026-08-07。
+> **战略定位（文件 2）**：`Risk-Controlled, Version-Aware Minimum Sufficient Evidence Systems`。首篇论文收缩为 `When Is Evidence Enough? Version-Aware Minimum Evidence Sets and Risk-Controlled Abstention for Long Financial Documents`——只做金融文档。
+>
+> 状态基准：`finvest-research` 主分支，`ecoquant@6465fff`（P0-1..N-8 修复后），2026-08-07。P0 阶段已完成。
 
 ---
 
@@ -280,12 +282,70 @@ verify generated docs are current
 | 判断 | 来源 |
 |---|---|
 | P0-1..P0-6（路由 gold、REVIEW 恒真、gold requirements、VISTA scaffold、LOIO、CI） | [FINVEST_RESEARCH_REFERENCE.md](FINVEST_RESEARCH_REFERENCE.md) §3.1-3.6（代码行号） |
-| N-1..N-5（`subtract` bug、AMENDS 未执行、对抗 mutation、hash 缺陷、E5 残留） | 参考 §3.7（recon 验证） |
+| N-1..N-8（`subtract`、AMENDS、对抗 mutation、hash、E5、camelCase、日期数字、输入概念） | 参考 §3.7 + reconciliation §二 |
 | 现有工作区计划差距 | 参考 §8.7（workspace recon） |
 | 校准层真实状态 | 参考 §5.2 + 计划 §3.5（recon 验证） |
+| 战略方向、go/no-go、文献矩阵、仓库战略 | [FINVEST_RESEARCH_REFERENCE_2.md](FINVEST_RESEARCH_REFERENCE_2.md) + [RESEARCH_REFERENCE_RECONCILIATION.md](RESEARCH_REFERENCE_RECONCILIATION.md) |
 
 > 首次运行本计划 Phase 0 之前，请先阅读参考文件 §3（已验证科研状态）以确认修复目标的代码位置。
 
 ---
 
-*本文档与 FINVEST_RESEARCH_REFERENCE.md 配套使用。计划以周为粒度，可按实际进度调整，但 Phase 0 → Phase 1 → Phase 2 → Phase 3 的顺序不变。*
+## 九、文件 2 战略优化（POST-CFA 执行路线）
+
+> 本节整合 [FINVEST_RESEARCH_REFERENCE_2.md](FINVEST_RESEARCH_REFERENCE_2.md) 的关键判断。完整差异见 [RESEARCH_REFERENCE_RECONCILIATION.md](RESEARCH_REFERENCE_RECONCILIATION.md)。
+
+### 9.1 方向纪律（必须遵守）
+
+1. **首篇论文收缩**为 `When Is Evidence Enough? ... Long Financial Documents`——**只做金融**，工业文档作为后续 external validity 或商业产品。
+2. **撤销**以下表述：`"RAG + Verifier" 是创新`、`"拒答更安全" 是创新`、`set-level sufficiency 首次提出`（SURE-RAG 已做）。
+3. 正确 gap：**版本约束 + 最小证据集 + 数值可执行 + 检索遗漏 + 人工复核成本统一到一个风险受控决策问题**。
+4. **检索优先**：先解决 Recall@20，再开发 Verifier。当前 Recall@5≈0.08，是最大瓶颈。
+
+### 9.2 Go/No-Go 门槛（10 个月，量化验收）
+
+| 时间 | 门槛 | 未达成动作 |
+|---|---|---|
+| Month 2 | ≥50 个可复核 case | 停止算法开发，修 Benchmark |
+| Month 3 | 第二标注者确定 | 无则降级 pilot |
+| Month 4 | IAA ≥ 0.70 | 重写定义/界面 |
+| Month 5 | **Recall@20 ≥ 0.70** | 论文转向 retrieval |
+| Month 6 | all-required set recall ≥ 0.55 | 停止 calibration 主张 |
+| Month 7 | coverage ≥ 20% @ ≤5% risk | 不得宣称自动化效用 |
+| Month 8 | version holdout gain 成立 | 移除 version novelty |
+| Month 9 | ≥1 显著且有实质效应 | 转 Benchmark/failure paper |
+| Month 10 | 可独立复现 | 不投稿主会 |
+
+**90 天计划与本表的衔接**：Phase 1（检索基线 + 300 case）对应 Month 2-5；Phase 2（方法）对应 Month 5-8；Phase 3（统计+论文）对应 Month 8-10。**Month 5 的 Recall@20≥0.70 是 Phase 1 的硬性验收**。
+
+### 9.3 数据集目标（采用文件 2 的现实版）
+
+| 维度 | 文件 1（V1） | 文件 2（现实） | 采用 |
+|---|---|---|---|
+| Issuers | 20-30 | 36-50 | 文件 2（分阶段：Phase 1 先 20-30，V1 到 36-50） |
+| Cases | 2,000-5,000 | ~600（360 base + 120 multi + 120 conflict/insufficient） | **文件 2 优先**（人工可复核） |
+| 双标 | 20-30% | 100-150 cases | 文件 2 |
+| 版本冲突 | 15 类问题 | 50 版本冲突 pilot 先行 | 文件 2 |
+
+### 9.4 50 个版本冲突 pilot（Phase 1 前置，文件 2 §1.10）
+
+现有 challenge cases 已有 6 类 mutation（wrong-period/future-source/amendment/scale-sign/duplicate/insufficient）。按文件 2 扩展：
+- **amended filing**（10-K vs 10-K/A 数值差异）；
+- **restatement**（2024 原始 vs 2025 重述的 2024 比较值）；
+- **point-in-time cutoff 语义**（"截至 2024-11-01" vs "最新已知值"）；
+- **comparative figure from later filing**；
+- **cross-version conflict**（同一事实不同版本数字矛盾）。
+
+这 50 个 pilot 直接服务 Recall@20 与 version holdout 的验收。
+
+### 9.5 仓库战略（三个月后目标，不打断当前）
+
+文件 2 §3.5：公开 portfolio 只保留 4 个一线入口（`finvest-research` / `finvest-core` / `pdf-manager` / `auralynq`），内部工具合并为 `finvest-tooling/`。当前**不执行**（避免打断 Phase 1），作为 2026-10 的治理任务登记。
+
+### 9.6 CFA 重置纪律
+
+文件 2 §1.10：未来 15 天**不启动重大科研开发**，专注 CFA。只允许修复阻止 CI 运行的极小问题。**当前状态已满足**：P0/N 修复完成、4 个 CI 全绿、UPS 数据对齐。今天可建 `POST-CFA RESEARCH RESET` GitHub issue 记录 go/no-go 门槛。
+
+---
+
+*本文档与两份参考文件配套使用。计划以周为粒度，可按实际进度调整，但 Phase 0 → Phase 1 → Phase 2 → Phase 3 的顺序不变；go/no-go 门槛（§9.2）是硬性验收。*
