@@ -42,6 +42,10 @@ matrix entry.
 |---|---|
 | [README.md](README.md) | This file — the programme at a glance |
 | [AGENTS.md](AGENTS.md) | Navigation for AI agents: read this first |
+| [docs/FINVEST_RESEARCH_REFERENCE.md](docs/FINVEST_RESEARCH_REFERENCE.md) | Research core reference #1 — code-verified status audit |
+| [docs/FINVEST_RESEARCH_REFERENCE_2.md](docs/FINVEST_RESEARCH_REFERENCE_2.md) | Research core reference #2 — strategic direction & literature |
+| [docs/FINVEST_RESEARCH_REFERENCE_3.md](docs/FINVEST_RESEARCH_REFERENCE_3.md) | Research core reference #3 — sequential evidence acquisition & certification (P0-9) |
+| [docs/RESEARCH_REFERENCE_RECONCILIATION.md](docs/RESEARCH_REFERENCE_RECONCILIATION.md) | Reconciliation of the three reference files |
 | [docs/research-spine.md](docs/research-spine.md) | The evidence chain in depth (data → labels → experiments → claims) |
 | [docs/experiments.md](docs/experiments.md) | Experiment registry E0–E8 + A10/A11 pilot status (machine-synced) |
 | [docs/governance.md](docs/governance.md) | Claim-evidence matrix, evidence-status legend, honesty rules |
@@ -89,7 +93,10 @@ Each has its own remote (see [docs/tools/](docs/tools/) for links).
 - A11 two-stage experiment on the leak-free corpus runs end-to-end:
   R1 recall@5 ≈ 0.105, R2 ≈ 0.079, R3 ≈ 0.105, R4 ≈ 0.053 — real numbers,
   NOT paper headline results.
-- The production verifier is gold-free by construction (tests enforce it).
+- The production verifier is gold-free by construction (tests enforce it):
+  the executable program is **induced from the question text**
+  (`finvest/program_induction/induction.py`, P0-9) — the sealed payload's
+  calc-program field is never consumed (it lives beside the hidden answer).
 
 **What is explicitly NOT true:**
 

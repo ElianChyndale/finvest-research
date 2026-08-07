@@ -1,28 +1,28 @@
-# 参考文件 1 vs 参考文件 2 — 差异、协调与新发现
+# 参考文件 1 / 2 / 3 — 差异、协调与新发现
 
-> **Reconciliation of FINVEST_RESEARCH_REFERENCE.md (#1) and FINVEST_RESEARCH_REFERENCE_2.md (#2)**
+> **Reconciliation of FINVEST_RESEARCH_REFERENCE.md (#1), FINVEST_RESEARCH_REFERENCE_2.md (#2) and FINVEST_RESEARCH_REFERENCE_3.md (#3)**
 >
 > 本文件回答两个问题：
-> 1. 两份核心参考文件有什么**本质不同**？
-> 2. 文件 2 带来了哪些**新发现**，如何据此**优化一切**？
+> 1. 三份核心参考文件有什么**本质不同**？
+> 2. 每份文件带来了哪些**新发现**，如何据此**优化一切**？
 >
 > 日期：2026-08-07。
 
 ---
 
-## 一、两份文件的本质差异
+## 一、三份文件的本质差异
 
-| 维度 | 文件 1 `FINVEST_RESEARCH_REFERENCE.md` | 文件 2 `FINVEST_RESEARCH_REFERENCE_2.md` |
-|---|---|---|
-| **本质** | 代码级**现状审计 + 修复路线** | 战略**方向决策 + 文献综合 + 科研程序** |
-| **回答的问题** | "我现在的科研状态真实如何？哪些 claim 不可信？" | "我未来 3-10 年唯一方向是什么？顶会 gap 在哪？" |
-| **方法** | 逐行验证代码、跑测试、核对产物 | 20,000 次敏感性分析、103-source 证据矩阵、候选方向锦标赛 |
-| **输出** | 状态重分类表 + P0/N 修复 + 4 篇论文拆分 | 唯一终极方向 + go/no-go 门槛 + 正式问题定义 + 仓库组合审计 |
-| **范围** | 聚焦 ecoquant 科研实现 | 全 GitHub 组合（29 repo）+ 商业 + 升学 + 终局 |
-| **时间视角** | 现在（2026-08） | 未来 10 个月 → 3 年 → 10-20 年 |
-| **参考文件关系** | 配套（文件 2 的定位细化文件 1 的论文 2） | 配套（文件 1 的验证是文件 2 战略的现状基础） |
+| 维度 | 文件 1 `FINVEST_RESEARCH_REFERENCE.md` | 文件 2 `FINVEST_RESEARCH_REFERENCE_2.md` | 文件 3 `FINVEST_RESEARCH_REFERENCE_3.md` |
+|---|---|---|---|
+| **本质** | 代码级**现状审计 + 修复路线** | 战略**方向决策 + 文献综合 + 科研程序** | 方向**升级 + 可执行落地（序贯证据获取 + 认证）** |
+| **回答的问题** | "我现在的科研状态真实如何？哪些 claim 不可信？" | "我未来 3-10 年唯一方向是什么？顶会 gap 在哪？" | "把唯一方向再升一层后的正式问题是什么？上一个方向暴露的新 P0 当场修掉。" |
+| **方法** | 逐行验证代码、跑测试、核对产物 | 20,000 次敏感性分析、103-source 证据矩阵、候选方向锦标赛 | 代码审计 `calculation_program`（P0-9）+ 程序归纳实现 + 形式化 State/Actions/Certificate |
+| **输出** | 状态重分类表 + P0/N 修复 + 4 篇论文拆分 | 唯一终极方向 + go/no-go 门槛 + 正式问题定义 + 仓库组合审计 | 序贯决策形式化 + P0-9 修复 + 五篇论文树 + 追加 go/no-go Gate 0 |
+| **范围** | 聚焦 ecoquant 科研实现 | 全 GitHub 组合（29 repo）+ 商业 + 升学 + 终局 | 聚焦科研问题升级 + 生产路径纯度 |
+| **时间视角** | 现在（2026-08） | 未来 10 个月 → 3 年 → 10-20 年 | 现在（P0-9 已落地）→ 5 年 |
+| **参考文件关系** | 配套（文件 2 的定位细化文件 1 的论文 2） | 配套（文件 1 的验证是文件 2 战略的现状基础） | 配套（文件 2 的 Evidence Entitlement 是文件 3 序贯问题的静态特例） |
 
-**一句话**：文件 1 回答"**你现在是什么**"，文件 2 回答"**你应该成为什么**"。
+**一句话**：文件 1 回答"**你现在是什么**"，文件 2 回答"**你应该成为什么**"，文件 3 回答"**把上一个方向升一层后的新 P0 如何当场落地**"。
 
 ---
 
@@ -81,6 +81,25 @@
 
 ---
 
+## 三·五、文件 3 带来的新发现与 P0-9（2026-08-07）
+
+### 新发现 8：方向升级 — Evidence Entitlement 是序贯问题的静态特例
+文件 2 的 `Risk-Controlled, Version-Aware Minimum Sufficient Evidence Systems`（一次性选择充分证据集）被文件 3 泛化为 **Risk-Controlled Sequential Evidence Acquisition and Certification**：`Retrieve / QueryExpand / FindVersion / FindAmendment / ReadTable / Calculate / Verify / AskHuman / Answer / Abstain` 成为一等动作。文件 2 的收缩策略（首篇论文只做金融）仍适用于文件 3。
+
+### 新发现 9：`calculation_program` 是新的 P0（oracle assistance）
+文件 3 代码审计发现：production verifier 仍从 sealed case payload 读取 `calculation_program["operation"]`（`run.py:492`）。该字段与 `gold_answer` 同处一个 payload（`EXTENSION_40_cases.json:135-143`），属于 gold annotation，而非 production input。**生产路径应自己从问题归纳程序。**
+
+### P0-9 已修复（2026-08-07）
+- 新增 `finvest/program_induction/induction.py`：`induce_program(question)` → `{operation, required_metrics, ...}`，仅消费问题字符串。
+- `_verify` 删除 `case.get("calculation_program")`，改用 `induce_program`。
+- 对 sealed 39 个 case：归纳的 operation 与 gold `calculation_program` **0 不一致**。
+- 回归测试 9 项（含 mutation invariance：改变/删除 `calculation_program`，decision 不变）+ 全量 `pytest tests/finvest/ -q` → **249 passed, 3 skipped**。
+- 端到端等价性：所有 19 个 case 的 numerical verification_state 逐 case 一致；decision 差异仅来自 temporal 检索候选漂移（环境性，dense 缺失，非 P0-9）。
+
+**影响**：A11 的 `1 ANSWER / 18 REVIEW` 在 P0-9 下仍有效（唯一 ANSWER case 无 `calculation_program`）；文件 1 §2.1 的"当前实验可信度 3/10"上调为 4/10（§2.2）。
+
+---
+
 ## 四、如何据此优化一切（行动项）
 
 ### A. 科研方向（立即）
@@ -104,10 +123,11 @@
 
 ## 五、最终协调立场
 
-两份文件**不冲突**，是互补的：
+三份文件**不冲突**，是互补的：
 - **文件 1 证明我们现在能做什么**（真实、无泄漏、可复现的骨架）。
 - **文件 2 决定我们要成为什么**（风险受控、版本感知的最小充分证据系统）。
+- **文件 3 把文件 2 升一层并当场修掉新 P0**（序贯证据获取与认证 + P0-9 程序归纳）。
 
-> 执行优先级：文件 2 的战略方向 → 文件 1 的工程验证 → 两者的 go/no-go 门槛把关。
+> 执行优先级：文件 2 的战略方向（被文件 3 升级）→ 文件 1 的工程验证 → 文件 3 的 P0-9 纯度门槛 → 三者的 go/no-go 门槛把关。
 
-下一步（CFA 后）按文件 2 §1.10 执行：冻结 RQ/schema → 删除 paper-ineligible headline → 确定第二标注者 → 50 版本冲突 pilot → 解决 Recall@20。
+下一步（CFA 后）按文件 2 §1.10 执行：冻结 RQ/schema → 删除 paper-ineligible headline → 确定第二标注者 → 50 版本冲突 pilot → 解决 Recall@20。P0-9（程序归纳）已先行落地并纳入 §9 门槛 Gate 0。

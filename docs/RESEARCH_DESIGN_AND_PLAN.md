@@ -1,10 +1,12 @@
 # FinVEST 科研设计 + 执行计划
 
-> **Design & Execution Plan based on [FINVEST_RESEARCH_REFERENCE.md](FINVEST_RESEARCH_REFERENCE.md) + [FINVEST_RESEARCH_REFERENCE_2.md](FINVEST_RESEARCH_REFERENCE_2.md)**
+> **Design & Execution Plan based on [FINVEST_RESEARCH_REFERENCE.md](FINVEST_RESEARCH_REFERENCE.md) + [FINVEST_RESEARCH_REFERENCE_2.md](FINVEST_RESEARCH_REFERENCE_2.md) + [FINVEST_RESEARCH_REFERENCE_3.md](FINVEST_RESEARCH_REFERENCE_3.md)**
 >
-> 本文件把两份参考文件中的判断转化为**可执行的架构设计与按周计划**。核心目标：在 90 天内获得第一张**完全无 target leakage、可复现、能区分方法优劣的主实验表**。
+> 本文件把参考文件中的判断转化为**可执行的架构设计与按周计划**。核心目标：在 90 天内获得第一张**完全无 target leakage、可复现、能区分方法优劣的主实验表**。
 >
 > **战略定位（文件 2）**：`Risk-Controlled, Version-Aware Minimum Sufficient Evidence Systems`。首篇论文收缩为 `When Is Evidence Enough? Version-Aware Minimum Evidence Sets and Risk-Controlled Abstention for Long Financial Documents`——只做金融文档。
+>
+> **方向升级（文件 3）**：`Risk-Controlled Sequential Evidence Acquisition and Certification`。文件 2 的 Evidence Entitlement 是序贯决策的静态特例；文件 3 把 `继续检索 / 请求人 / 停止` 作为一等动作（见 §3.7-3.9）。
 >
 > 状态基准：`finvest-research` 主分支，`ecoquant@6465fff`（P0-1..N-8 修复后），2026-08-07。P0 阶段已完成。
 
@@ -67,6 +69,12 @@ abstain precision/recall, coverage, expected utility
 | `test_evidence_id_requirement_space_alignment` | coverage/requirement 同空间 |
 | `test_no_gold_import_in_production_modules` | 生产模块无 gold import |
 | `test_a11_set_selection_nondegenerate` | S2/S3/S4 不再空集（新） |
+| `test_verify_never_reads_calculation_program` | **P0-9**：`_verify` 不再读 `calculation_program`（AST 扫描） |
+| `test_production_path_never_reads_gold_adjacent_fields` | **P0-9**：生产路径不读 `requirement_graph/answer_type/sufficiency_label/decision_label` |
+| `test_verify_decision_invariant_to_calculation_program_mutation` | **P0-9 Gate 0**：改变/删除 `calculation_program`，decision 不变 |
+| `test_induce_program_subtract_cashflow` | **P0-9**：问题 → subtract(OCF, CAPEX) |
+| `test_induce_program_extractive_no_op` | **P0-9**：抽取式问题无 operation |
+| `test_induce_program_gold_free_contract` | **P0-9**：归纳模块只消费 question 字符串 |
 
 ---
 
@@ -152,6 +160,53 @@ verify core and integration CI status
 verify generated docs are current
 ```
 
+### 3.7 Program Induction（P0-9，参考文件 3 §3-4）
+
+**问题（新方向 Gate 0）**：production verifier 曾从 sealed case payload 读取 `calculation_program`（`run.py:492`）。该字段与 `gold_answer` 同处一个 payload，属于 oracle assistance。生产路径必须自己从问题归纳程序。
+
+**已修复（2026-08-07）**：
+
+```text
+question
+  → induce_program(question)                    # 仅消费问题字符串
+  → { operation: subtract|sum|average|...,
+      required_metrics: [OCF, CAPEX], ... }     # 可执行 symbolic program
+  → verify_calculation(operation, evidence, required_concepts)
+```
+
+- 新增 `finvest/program_induction/induction.py`：复用公开概念字典 `_concepts_for` + finance-operators 词典（与 `calculate.FUNCTIONS` 对齐）+ FCFF 派生规则。
+- 对 sealed 39 个 case 的行为等价性已验证：9 个 cashflow 归纳为 `subtract`、30 个抽取式无 operation，与 gold `calculation_program` **0 不一致**。
+- 回归测试 9 项（§2.3），核心是 **mutation invariance**：改变/删除 `calculation_program`，production decision 不变。
+
+**下一步**：规则基线已落地；小模型微调（FinanceBench/FinDER 训练 + FinVEST 验证）是 P3 里程碑，必须遵守同一 gold-free 契约。
+
+### 3.8 Sequential Evidence Acquisition（参考文件 3 §5-6）
+
+把一次性的 `retrieve → select → verify` 泛化为**序贯决策问题**：
+
+```text
+s_t = (q, E_t, G_t, V_t, B_t, H_t)
+a_t ∈ { Retrieve, QueryExpand, FindVersion, FindAmendment,
+        ReadTable, Calculate, Verify, AskHuman, Answer, Abstain }
+```
+
+- 目前 `run.py` 是**单步**路径（R1-R4 一次检索 → S 选择 → V 验证 → 路由）。后续把 `Answer` 之外的动作接到真正的"下一步证据"循环。
+- 最小可行序贯：从 `FindVersion / FindAmendment` 开始（对应 §9.4 的版本冲突 pilot），再逐步引入 `Calculate / AskHuman`。
+- 需要 trajectory 数据（state, action, next evidence, cost, review, outcome）；第一阶段用 synthetic action environment + oracle trajectories + heuristic policy，产品未来产生 real trajectories。
+
+### 3.9 VOI Review Allocation（参考文件 3 §5.6）
+
+把"人工复核成本"显式放进决策目标：
+
+```python
+max_π E[ U_correct − C_retrieval − C_compute − C_human − C_abstain − L_unsafe ]
+s.t.  R_accepted(π) ≤ α
+```
+
+- 当前 `route_decision`（`has_evidence, joint_valid`）是确定性 gate，**没有成本项**。
+- 升级路径：对 REVIEW 候选，按 **Value of Information**（`a* = argmax_a E(ΔU|a) − Cost(a)`）判断"补哪一条证据 / 谁审"信息价值最高，而不是一律 REVIEW。
+- 直接服务当前 `18/19 REVIEW`（automation utility 极低）问题的 **Price of Safety / Price of Review** 研究。
+
 ---
 
 ## 四、按周执行计划（90 天）
@@ -160,12 +215,13 @@ verify generated docs are current
 
 **第 1 周**
 - [x] 建立本文档与参考文件（本任务产出）
+- [x] **P0-9 程序归纳**：新增 `finvest/program_induction/induction.py`；`_verify` 删除 `calculation_program` 读取，改用 `induce_program`（参考文件 3 §3-4）
+- [x] **P0-9 回归测试**：mutation invariance + AST 扫描 + 归纳单元测试（§2.3 追加 9 项；全绿）
 - [ ] 作废 A11 routing/review/selector 数字（状态文件更新）
 - [ ] 重写 routing：删 `run.py:315` 的 gold 读取 → 键 `sufficiency_label`/`answer_type`（sealed case 已有这些非 gold 字段，见参考 §3.1 关键新发现）
 - [ ] 修复 REVIEW 恒真：`run.py:509` 定义真实正确性
 - [ ] **修复数值验证 `subtract` bug**：`calculate.py:135` 增加 `subtract` 操作（及派生所需 op），否则真实 cashflow 案例恒 REVIEW（参考 N-1）
 - [ ] 统一 requirement/coverage 空间 + 修复 S4 退化（S4 必须用真 gold coverage 作上界，见参考 §3.3）
-- [ ] 新增 8 个回归测试（§2.3）
 
 **第 2 周**
 - [ ] 重写 LOIO：真 held-out fold（train 5 → test 1，报 held-out 指标）
