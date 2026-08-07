@@ -671,6 +671,14 @@ FinVEST 当前是**金融域内的可信 IR + 验证系统**，不是 finance re
 | 单一 issuer/模板上的假泛化 | 高 | issuer/time/template 多重 holdout |
 | 人力标注质量不足 | 中 | 20-30% 双标 + adjudication + qualification test |
 | 概念字典过小导致检索假阴性 | 中 | 表示增强（label/definition/taxonomy）而非只调检索 |
+| **SEC 数据漂移**（source 更新 → hash 与冻结 manifest 不符 → 重跑 corpus_id 变） | 中 | 冻结 manifest 存 hash；漂移时更新 manifest 并记录数据变更，不假装冻结版本 |
+| **双 checkout 导入分叉**（top-level editable vs submodule） | 高 | 修复必须在两处同步（`pip install -e` 指向顶层）；CI 用独立环境避免 |
+| **private submodule 使 hub CI 无法 clone** | 中 | hub 治理 CI 只检查 gitlink/URL，不做递归 clone |
+
+**已发生的实例（2026-08-07，真实数据处理经验）：**
+- **UPS 数据漂移**：SEC 更新了 UPS companyfacts（新 hash `3ce44d9d...` vs 冻结 `6dc49f51...`）。submodule cache 用了新数据 → 若重跑会重建漂移 corpus（170556 vs 冻结 170229）。修复：submodule cache 对齐冻结版本（6 ticker 全部 hash-match），保持可复现。
+- **双 checkout 分叉**：`D:\Aireland\EcoQuant-Financial-Intelligence`（顶层，`pip install -e` 指向）与 `finvest-research/submodules/ecoquant` 是同 repo 两 checkout。运行导入顶层（未修复版）→ 修复在 submodule 却不在运行路径 → 真实 A11 一度 0 ANSWER。修复：patch 同步全部修复到两处，提交序列完全一致。
+- **private submodule CI 404**：hub 治理 CI 首个 run 因 `Auralynq`/`portfolio` 等 private repo 无法被默认 GITHUB_TOKEN clone 而失败。修复：治理 CI 只检查 gitlink/URL，不做递归 clone。
 
 ---
 
