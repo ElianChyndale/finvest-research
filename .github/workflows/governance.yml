@@ -1,0 +1,29 @@
+name: Hub Governance (G-2)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  # Verifies the 13-repo hub topology has not drifted: submodule SHAs exist,
+  # INTEGRATION_LOCK agrees with submodule HEADs, no dirty submodules, every
+  # claim artifact exists, and generated docs are current.
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Run hub governance check
+        run: |
+          python scripts/verify_hub_governance.py
