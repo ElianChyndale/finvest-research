@@ -1,15 +1,15 @@
 {
   "annotation": {
-    "n_annotations": 20,
+    "n_annotations": 39,
     "n_evidence_packages": 60,
     "route": {
-      "ABSTAIN": 1,
-      "ANSWER": 16,
-      "REVIEW": 3
+      "ABSTAIN": 2,
+      "ANSWER": 31,
+      "REVIEW": 6
     },
     "status": {
-      "NEEDS_EXTERNAL_REVIEW": 3,
-      "SOLO_PROVISIONAL": 17
+      "NEEDS_EXTERNAL_REVIEW": 6,
+      "SOLO_PROVISIONAL": 33
     }
   },
   "corpus": {
@@ -109,8 +109,8 @@
       "corpus_id": "af406d474f7455477e6a30d1b98900854fcfcd52b6e53a66b9f9a475b3e7c7c4",
       "corpus_records": 170229,
       "decisions": {
-        "ABSTAIN": 1,
-        "ANSWER": 0,
+        "ABSTAIN": 0,
+        "ANSWER": 1,
         "REVIEW": 18
       },
       "denominator_audit": {
@@ -143,15 +143,15 @@
         "R1_bm25": 0.08,
         "R2_dense": 0.06,
         "R3_rrf": 0.08,
-        "R4_concept_temporal": 0.04
+        "R4_concept_temporal": 0.08
       },
       "selective": {
-        "abstention_precision": 1.0,
-        "answer_precision": 0.0,
-        "coverage": 0.0,
-        "false_review_rate": 0.0,
+        "abstention_precision": 0.0,
+        "answer_precision": 1.0,
+        "coverage": 0.0526,
+        "false_review_rate": 0.8333,
         "note": "coverage = ANSWER share; a system that always REVIEWS has high safety but zero utility — report coverage alongside precision.",
-        "review_precision": 1.0,
+        "review_precision": 0.1667,
         "unsafe_answer_rate": 0.0
       }
     }

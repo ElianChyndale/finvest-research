@@ -6,10 +6,10 @@
 
 - Markers: EXPLORATORY_PILOT, SMALL_SAMPLE, NOT_PAPER_HEADLINE, SOLO_PROVISIONAL
 - Cases evaluated: 19
-- Decisions: {'ABSTAIN': 1, 'ANSWER': 0, 'REVIEW': 18}
+- Decisions: {'ABSTAIN': 0, 'ANSWER': 1, 'REVIEW': 18}
 - Corpus: 170229 facts, id af406d474f745547…
-- Per-issuer macro recall@5: {'R1_bm25': 0.08, 'R2_dense': 0.06, 'R3_rrf': 0.08, 'R4_concept_temporal': 0.04}
-- Selective: {'abstention_precision': 1.0, 'answer_precision': 0.0, 'coverage': 0.0, 'false_review_rate': 0.0, 'note': 'coverage = ANSWER share; a system that always REVIEWS has high safety but zero utility — report coverage alongside precision.', 'review_precision': 1.0, 'unsafe_answer_rate': 0.0}
+- Per-issuer macro recall@5: {'R1_bm25': 0.08, 'R2_dense': 0.06, 'R3_rrf': 0.08, 'R4_concept_temporal': 0.08}
+- Selective: {'abstention_precision': 0.0, 'answer_precision': 1.0, 'coverage': 0.0526, 'false_review_rate': 0.8333, 'note': 'coverage = ANSWER share; a system that always REVIEWS has high safety but zero utility — report coverage alongside precision.', 'review_precision': 0.1667, 'unsafe_answer_rate': 0.0}
 - Leakage audit: {'cross_split_leakage_violations': [], 'evidence_id_overlap_with_gold': 0, 'gold_tokens_in_corpus': []}
 
 ### Denominator audit
@@ -39,9 +39,9 @@
 
 ## Annotation state
 
-- Annotations: 20
-- Status: {'NEEDS_EXTERNAL_REVIEW': 3, 'SOLO_PROVISIONAL': 17}
-- Route: {'REVIEW': 3, 'ANSWER': 16, 'ABSTAIN': 1}
+- Annotations: 39
+- Status: {'NEEDS_EXTERNAL_REVIEW': 6, 'SOLO_PROVISIONAL': 33}
+- Route: {'REVIEW': 6, 'ANSWER': 31, 'ABSTAIN': 2}
 - Frozen evidence packages: 60
 
 ## Leak-free corpus
