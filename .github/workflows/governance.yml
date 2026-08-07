@@ -43,7 +43,7 @@ jobs:
           assert len(urls) == 13, f'expected 13 submodule urls, got {len(urls)}'
           # Verify the gitlink SHAs recorded in the index are 40-hex.
           import subprocess
-          out = subprocess.run(['git', 'ls-files', '--stage', 'submodules/'],
+          out = subprocess.run(['git', 'ls-files', '--stage'],
                                capture_output=True, text=True).stdout
           links = [l for l in out.splitlines() if ':160000' in l]
           assert len(links) == 13, f'expected 13 gitlinks, got {len(links)}'
