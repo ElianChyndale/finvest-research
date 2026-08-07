@@ -41,14 +41,15 @@ jobs:
               if line.startswith('url = '):
                   urls.append(line.split('=', 1)[1].strip())
           assert len(urls) == 13, f'expected 13 submodule urls, got {len(urls)}'
-          # Verify the gitlink SHAs recorded in the index are 40-hex.
+          # Verify the gitlink SHAs recorded in the tree are 40-hex.
+          # ls-tree (not ls-files) so it works without a submodule checkout.
           import subprocess
-          out = subprocess.run(['git', 'ls-files', '--stage'],
+          out = subprocess.run(['git', 'ls-tree', 'HEAD', 'submodules/'],
                                capture_output=True, text=True).stdout
-          links = [l for l in out.splitlines() if ':160000' in l]
+          links = [l for l in out.splitlines() if l.startswith('160000')]
           assert len(links) == 13, f'expected 13 gitlinks, got {len(links)}'
           for l in links:
-              sha = l.split()[1]
+              sha = l.split()[2]
               assert len(sha) == 40 and all(c in '0123456789abcdef' for c in sha), sha
           print(f'OK: {len(urls)} submodule urls well-formed, {len(links)} gitlinks valid')
           EOF
